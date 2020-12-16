@@ -7,6 +7,14 @@ public class Solver {
 	boolean solutionFound;
 	HashSet<String> solutionSet;
 
+	public boolean isSolutionFound() {
+		return this.solutionFound;
+	}
+
+	public HashSet<String> getSolutionSet() {
+		return this.solutionSet;
+	}
+
 	public static void main(String[] args) {
 		int target = Integer.valueOf(args[0]);
 		int[] nums = new int[args.length-1];
@@ -16,16 +24,12 @@ public class Solver {
 		Solver solver = new Solver(target, nums);
 		System.out.println(solver);
 
-		//System.out.println();
-		LinkedList<Integer> numsAsList = new LinkedList<Integer>();
-		for (int x :  nums) numsAsList.add(x);
-
-		HashMap<Integer, HashSet<String>> solution = solver.solve(numsAsList);
+		solver.solve();
 
 
-		if (solver.solutionFound) {
+		if (solver.isSolutionFound()) {
 			System.out.println("It is possible");
-			for (String str : solver.solutionSet) {
+			for (String str : solver.getSolutionSet()) {
 				System.out.println(str);
 			}
 		} else {
@@ -34,11 +38,19 @@ public class Solver {
 	}
 
 
+
 	Solver(int target, int[] nums) {
 		this.target = target;
 		this.nums = nums;
 		this.solutionFound = false;
 		mem = new HashMap<String, HashMap<Integer, HashSet<String>>>();
+	}
+
+	public void solve() {
+		LinkedList<Integer> numsAsList = new LinkedList<Integer>();
+		for (int x :  nums) numsAsList.add(x);
+
+		solve(numsAsList);
 	}
 
 	public String toString() {
