@@ -79,11 +79,32 @@ public class Solver {
 		HashSet<String> result = new HashSet<String>();
 		for (String a : s1) {
 			for (String b : s2) {
-				if (op.equals("+")) result.add(a + op + b);
-				else result.add("(" + a + ")" + op + "(" + b + ")");
+				result.add(operationToString(a, op, b));
 			}
 		}
 		return result;
+	}
+
+
+	private static String operationToString(String a, String op, String b) {
+		if (op.equals("+")) return a + op + b;
+		if (isOneInteger(a) && isOneInteger(b)) return a + op + b;
+		if (isOneInteger(a)) return a + op + "(" + b + ")";
+		if (isOneInteger(b)) return "(" + a + ")" + op + b;
+		return "(" + a + ")" + op + "(" + b + ")";
+	}
+
+	private static boolean isOneInteger(String x) {
+		int n = x.length();
+		if (n == 0) return true;
+		if (x.charAt(0) == '(') return false;
+		for (int i = 0; i < x.length(); i++) {
+			if (!Character.isDigit(x.charAt(i))) {
+				if (i > 0) return false;
+				if (x.charAt(i) != '-' || x.charAt(0) != '+') return false;
+			}
+		}
+		return true;
 	}
 
 	private HashMap<Integer, HashSet<String>> solve(LinkedList<Integer> nums) {
