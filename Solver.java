@@ -6,6 +6,7 @@ public class Solver {
 	HashMap<String, HashMap<Integer, HashSet<String>>> mem;
 	boolean solutionFound;
 	HashSet<String> solutionSet;
+	boolean findAllSolutions;
 
 	public boolean isSolutionFound() {
 		return this.solutionFound;
@@ -26,7 +27,6 @@ public class Solver {
 
 		solver.solve();
 
-
 		if (solver.isSolutionFound()) {
 			System.out.println("It is possible");
 			for (String str : solver.getSolutionSet()) {
@@ -40,11 +40,17 @@ public class Solver {
 
 
 	Solver(int target, int[] nums) {
+		this(target, nums, true);
+	}
+
+	Solver(int target, int[] nums, boolean findAllSolutions) {
 		this.target = target;
 		this.nums = nums;
 		this.solutionFound = false;
+		this.findAllSolutions = findAllSolutions;
 		mem = new HashMap<String, HashMap<Integer, HashSet<String>>>();
 	}
+
 
 	public void solve() {
 		LinkedList<Integer> numsAsList = new LinkedList<Integer>();
@@ -109,7 +115,7 @@ public class Solver {
 
 	private HashMap<Integer, HashSet<String>> solve(LinkedList<Integer> nums) {
 		HashMap<Integer, HashSet<String>> result = new HashMap<Integer, HashSet<String>>();
-		if (solutionFound) return result;
+		if (!findAllSolutions && solutionFound) return result;
 		if (nums.size() == 1) {
 			int x = nums.get(0);
 			addToMap(result, x, "" + x);
@@ -124,7 +130,6 @@ public class Solver {
 			LinkedList<Integer> comp = complement(nums, subset);
 			if (subset.size() == 0 || comp.size() == 0 || subset.size() < comp.size()) continue;
 
-			//System.out.println(join(",", nums) + " subsets1 " + join(",", subset) + " - " + join(",", comp));
 			if (subset.size() > 0 && comp.size() > 0) {
 				HashMap<Integer, HashSet<String>> s1 = solve(subset);
 				HashMap<Integer, HashSet<String>> s2 = solve(comp);
@@ -145,12 +150,6 @@ public class Solver {
 					}
 				}
 			}
-			//System.out.println(join(",", nums) + " subsets2 " + join(",", subset) + " - " + join(",", comp));
-			//for (int x : result.keySet()) {
-			//	System.out.println(x + ":");
-			//	for (String sol : result.get(x)) System.out.println(sol);
-			//}
-			//System.out.println();
 		}
 		mem.put(numsToString, result);
 		if (result.containsKey(target)) {
@@ -160,23 +159,13 @@ public class Solver {
 		return result;
 	}
 
-	public void printAllSubsets(int[] nums) {
-		LinkedList<Integer> list = new LinkedList<Integer>();
-		for (int x : nums) list.add(x);
-		List<LinkedList<Integer>> subsets = subsets(list);
-		for (List<Integer> sub : subsets) {
-			System.out.println(join(",", sub));
-		}
-		System.out.println("In total : " + subsets.size());
-	}
-
-	public static String join(String joiner, List<Integer> list) {
+	private static String join(String joiner, List<Integer> list) {
 		StringBuilder sb = new StringBuilder();
 		for (int x : list) sb.append(x + joiner);
 		return sb.toString();
 	}
 
-	List<LinkedList<Integer>> subsets(LinkedList<Integer> nums) {
+	private List<LinkedList<Integer>> subsets(LinkedList<Integer> nums) {
 		List<LinkedList<Integer>> result = new LinkedList<LinkedList<Integer>>();
 		result.add(asLinkedList(nums.get(0)));
 		if (nums.size() == 1) {
@@ -200,7 +189,7 @@ public class Solver {
 		return result;
 	}
 
-	LinkedList<Integer> complement(LinkedList<Integer> complete, LinkedList<Integer> subset) {
+	private LinkedList<Integer> complement(LinkedList<Integer> complete, LinkedList<Integer> subset) {
 		LinkedList<Integer> result = new LinkedList<Integer>();
 		int j = 0;
 		for (int x : complete) {
@@ -217,7 +206,7 @@ public class Solver {
 		return result;
 	}
 
-	public List<Integer> join(LinkedList<Integer> s1, LinkedList<Integer> s2) {
+	private List<Integer> join(LinkedList<Integer> s1, LinkedList<Integer> s2) {
 		LinkedList<Integer> result = new LinkedList<Integer>();
 		result.addAll(s1);
 		result.addAll(s2);
