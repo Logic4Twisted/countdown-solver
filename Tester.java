@@ -37,6 +37,8 @@ public class Tester {
 
 		if (solver.isSolutionFound()) {
 			System.out.println("It is possible");
+			HashSet<String> solutions = solver.getSolutionSet();
+			System.out.println("" + solutions.size() + " solutions found");
 			for (String str : solver.getSolutionSet()) {
 
 				int result = Evaluator.eval(str);
